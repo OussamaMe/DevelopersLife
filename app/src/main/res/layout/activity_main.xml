@@ -56,6 +56,7 @@
             android:paddingBottom="8dp"/>
 
         <TextView
+            android:id="@+id/repeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_error"
@@ -103,8 +104,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:gravity="center"
-                android:paddingBottom="8dp"
-                android:text="когда нет времени сделать все правильно"
+                android:paddingBottom="4dp"
+                android:textColor="@color/white"
                 android:textSize="18sp" />
         </FrameLayout>
     </androidx.cardview.widget.CardView>
