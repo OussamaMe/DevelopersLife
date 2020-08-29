@@ -1,13 +1,28 @@
-package com.mehadjebioussama.developerslife;
+package com.mehadjebioussama.developerslife.mainactivity;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 
-import java.util.ArrayList;
+import com.bumptech.glide.Glide;
+import com.mehadjebioussama.developerslife.CustomPagerAdapter;
+import com.mehadjebioussama.developerslife.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
+import moxy.MvpAppCompatActivity;
+import moxy.presenter.InjectPresenter;
+import moxy.presenter.ProvidePresenter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MvpAppCompatActivity implements MainContract.View{
+    @InjectPresenter
+    MainPresenter presenter;
+
+    @ProvidePresenter
+    MainPresenter provideRepositoryPresenter() {
+        MainRepository repository = new MainRepository();
+        return new MainPresenter(repository);
+    }
+
     private ViewPager viewPager;
 
     @Override
@@ -18,6 +33,12 @@ public class MainActivity extends AppCompatActivity {
 
         CustomPagerAdapter pagerAdapter = new CustomPagerAdapter(getApplicationContext());
         viewPager.setAdapter(pagerAdapter);
+
+        Glide
+                .with(this)
+                .load("http://static.devli.ru/public/images/gifs/201306/ef1ff2e2-505b-4732-929c-4c9bc3d68abb.gif")
+                .centerCrop()
+                .into(((ImageView)findViewById(R.id.gif)));
 //        viewPager.setPageMargin(20);
 
 //        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
