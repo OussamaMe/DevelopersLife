@@ -4,7 +4,12 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
+
+import static com.mehadjebioussama.developerslife.util.Constansts.LATEST;
+import static com.mehadjebioussama.developerslife.util.Constansts.NUM_OF_CATEGORIES;
+import static com.mehadjebioussama.developerslife.util.Constansts.TOP;
 
 public class CustomPagerAdapter extends PagerAdapter {
 
@@ -17,41 +22,36 @@ public class CustomPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return NUM_OF_CATEGORIES;
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object o) {
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
         return view == o;
     }
 
+    @NonNull
     @Override
-    public  Object instantiateItem(ViewGroup container, int position) {
-//        View view = LayoutInflater.from(context).inflate(R.layout.pager_item, container, false);
-//        TextView imageView = view.findViewById(R.id.image);
-//        imageView.setBackgroundResource(pager.get(position));
-//        container.addView(view);
-//
-//        return view;
+    public  Object instantiateItem(@NonNull ViewGroup container, int position) {
         return null;
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
+    public void destroyItem(ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
     }
 
     @Override
-    public int getItemPosition(Object object) {
+    public int getItemPosition(@NonNull Object object) {
         return super.getItemPosition(object);
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        if (position == 0) {
-            return "Последние";
-        } else if (position == 1) {
-            return "Лучшие";
-        } else return "Горячие";
+        if (position == LATEST) {
+            return context.getString(R.string.latest);
+        } else if (position == TOP) {
+            return context.getString(R.string.top);
+        } else return context.getString(R.string.hot);
     }
 }

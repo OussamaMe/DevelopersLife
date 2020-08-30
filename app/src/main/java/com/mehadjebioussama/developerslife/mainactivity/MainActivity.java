@@ -44,8 +44,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainContract.V
 
         binding.repeat.setOnClickListener(view -> presenter.tryAgain(binding.viewpager.getCurrentItem()));
         binding.viewpager.addOnPageChangeListener(this);
-
-//        viewPager.setPageMargin(20);
     }
 
     @Override
