@@ -17,23 +17,23 @@ public class MainPresenter extends MvpPresenter<MainContract.View> implements Ma
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        repository.loadGif(callback);
+        repository.loadGif(callback, 0);
     }
 
     @Override
-    public void onNextClick() {
-        repository.onNextClick(callback);
+    public void onNextClick(int currentItem) {
+        repository.onNextClick(callback, currentItem);
     }
 
     @Override
-    public void onPreviousClick() {
-        repository.onPreviousClick(callback);
+    public void onPreviousClick(int currentItem) {
+        repository.onPreviousClick(callback, currentItem);
     }
 
     @Override
-    public void tryAgain() {
+    public void tryAgain(int currentItem) {
         getViewState().hideError();
-        repository.loadGif(callback);
+        repository.loadGif(callback, currentItem);
     }
 
     @Override
@@ -60,6 +60,11 @@ public class MainPresenter extends MvpPresenter<MainContract.View> implements Ma
         @Override
         public void showProgress() {
             getViewState().loadingGif();
+        }
+
+        @Override
+        public void enablePreviousButton() {
+            getViewState().enablePreviousButton();
         }
     };
 }

@@ -1,4 +1,4 @@
-package com.mehadjebioussama.developerslife;
+package com.mehadjebioussama.developerslife.util;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;

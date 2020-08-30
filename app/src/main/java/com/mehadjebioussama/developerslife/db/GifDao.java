@@ -12,11 +12,11 @@ public interface GifDao {
     @Query("SELECT * FROM GifsTable")
     public Single<List<GifDbModel>> getGifs();
 
+    @Query("SELECT * FROM GifsTable WHERE gifType = (:gifType)")
+    public Single<List<GifDbModel>> getGifsWithType(String gifType);
+
     @Insert
     public void insertGif(GifDbModel gif);
-
-    @Query("SELECT * FROM GifsTable WHERE id = (:id)")
-    public GifDbModel getGif(int id);
 
     @Query("DELETE FROM GifsTable")
     public void deleteAll();

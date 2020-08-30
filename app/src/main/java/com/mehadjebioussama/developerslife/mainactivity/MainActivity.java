@@ -11,11 +11,12 @@ import com.mehadjebioussama.developerslife.CustomPagerAdapter;
 import com.mehadjebioussama.developerslife.databinding.ActivityMainBinding;
 import com.mehadjebioussama.developerslife.db.GifDbModel;
 
+import androidx.viewpager.widget.ViewPager;
 import moxy.MvpAppCompatActivity;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
-public class MainActivity extends MvpAppCompatActivity implements MainContract.View {
+public class MainActivity extends MvpAppCompatActivity implements MainContract.View, ViewPager.OnPageChangeListener {
     @InjectPresenter
     MainPresenter presenter;
 
@@ -37,34 +38,14 @@ public class MainActivity extends MvpAppCompatActivity implements MainContract.V
         CustomPagerAdapter pagerAdapter = new CustomPagerAdapter(this);
         binding.viewpager.setAdapter(pagerAdapter);
 
-        binding.next.setOnClickListener(view -> {
-            presenter.onNextClick();
-            binding.previous.setEnabled(true);
-        });
+        binding.next.setOnClickListener(view -> presenter.onNextClick(binding.viewpager.getCurrentItem()));
 
-        binding.previous.setEnabled(false);
-        binding.previous.setOnClickListener(view -> {
-            presenter.onPreviousClick();
-        });
+        binding.previous.setOnClickListener(view -> presenter.onPreviousClick(binding.viewpager.getCurrentItem()));
 
-        binding.repeat.setOnClickListener(view -> presenter.tryAgain());
+        binding.repeat.setOnClickListener(view -> presenter.tryAgain(binding.viewpager.getCurrentItem()));
+        binding.viewpager.addOnPageChangeListener(this);
 
 //        viewPager.setPageMargin(20);
-
-//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int i, float v, int i1) {
-//
-//            }
-//            @Override
-//            public void onPageSelected(int i) {
-//            }
-//            @Override
-//            public void onPageScrollStateChanged(int i) {
-//
-//            }
-//        });
-
     }
 
     @Override
@@ -107,6 +88,22 @@ public class MainActivity extends MvpAppCompatActivity implements MainContract.V
         binding.cardView.setVisibility(View.VISIBLE);
         binding.buttons.setVisibility(View.VISIBLE);
     }
+
+    @Override
+    public void enablePreviousButton() {
+        binding.previous.setEnabled(true);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+
+    @Override
+    public void onPageSelected(int position) {
+        presenter.tryAgain(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) { }
 
     @Override
     protected void onDestroy() {

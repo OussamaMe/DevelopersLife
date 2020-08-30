@@ -13,9 +13,12 @@ public class GifDbModel {
 
     private String imageUrl;
 
-    public GifDbModel(String description, String imageUrl) {
+    private String gifType;
+
+    public GifDbModel(String description, String imageUrl, String gifType) {
         this.description = description;
         this.imageUrl = imageUrl;
+        this.gifType = gifType;
     }
 
     public int getId() {
@@ -30,7 +33,13 @@ public class GifDbModel {
         return imageUrl;
     }
 
+    public String getGifType() {
+        return gifType;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
+
+
 }

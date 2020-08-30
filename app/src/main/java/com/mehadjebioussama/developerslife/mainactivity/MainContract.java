@@ -18,15 +18,17 @@ public interface MainContract {
         void disablePreviousButton();
 
         void hideError();
+
+        void enablePreviousButton();
     }
 
     interface Presenter {
 
-        void onNextClick();
+        void onNextClick(int currentItem);
 
-        void onPreviousClick();
+        void onPreviousClick(int currentItem);
 
-        void tryAgain();
+        void tryAgain(int currentItem);
 
         void onActivityDestroy();
     }
@@ -40,5 +42,7 @@ public interface MainContract {
         void disablePreviousButton();
 
         void showProgress();
+
+        void enablePreviousButton();
     }
 }

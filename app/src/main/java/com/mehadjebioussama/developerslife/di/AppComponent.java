@@ -5,7 +5,7 @@ import com.mehadjebioussama.developerslife.mainactivity.MainRepository;
 import androidx.annotation.NonNull;
 import dagger.Component;
 
-@Component(modules = {AppModule.class, NetworkModule.class, DatabaseModule.class, DisposableModule.class})
+@Component(modules = {AppModule.class, NetworkModule.class, DatabaseModule.class, DisposableModule.class, GifFactoryModule.class})
 public interface AppComponent {
     void injectMainRepository(@NonNull MainRepository repository);
 }

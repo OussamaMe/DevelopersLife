@@ -15,6 +15,7 @@ public class GifApp extends Application {
                 .databaseModule(new DatabaseModule())
                 .networkModule(new NetworkModule())
                 .disposableModule(new DisposableModule())
+                .gifFactoryModule(new GifFactoryModule())
                 .build();
     }
 
