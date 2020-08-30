@@ -1,7 +1,5 @@
 package com.mehadjebioussama.developerslife;
 
-import android.util.Log;
-
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 

@@ -1,20 +1,16 @@
 package com.mehadjebioussama.developerslife.mainactivity;
 
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.mehadjebioussama.developerslife.CustomPagerAdapter;
-import com.mehadjebioussama.developerslife.R;
+import com.mehadjebioussama.developerslife.databinding.ActivityMainBinding;
 import com.mehadjebioussama.developerslife.db.GifDbModel;
 
-import androidx.cardview.widget.CardView;
-import androidx.viewpager.widget.ViewPager;
 import moxy.MvpAppCompatActivity;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
@@ -29,38 +25,29 @@ public class MainActivity extends MvpAppCompatActivity implements MainContract.V
         return new MainPresenter(repository);
     }
 
-    private ViewPager viewPager;
-    private ProgressBar progressBar;
-    private ImageView gif;
-    private TextView description;
-    private CardView next;
-    private CardView previous;
-    private RelativeLayout errorLayout;
-    private CardView cardView;
-    private RelativeLayout buttonsLayout;
-    private TextView repeat;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+        setContentView(binding.getRoot());
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        initViews();
 
         CustomPagerAdapter pagerAdapter = new CustomPagerAdapter(this);
-        viewPager.setAdapter(pagerAdapter);
+        binding.viewpager.setAdapter(pagerAdapter);
 
-        next.setOnClickListener(view -> {
+        binding.next.setOnClickListener(view -> {
             presenter.onNextClick();
-            previous.setEnabled(true);
+            binding.previous.setEnabled(true);
         });
 
-        previous.setEnabled(false);
-        previous.setOnClickListener(view -> {
+        binding.previous.setEnabled(false);
+        binding.previous.setOnClickListener(view -> {
             presenter.onPreviousClick();
         });
 
-        repeat.setOnClickListener(view -> presenter.tryAgain());
+        binding.repeat.setOnClickListener(view -> presenter.tryAgain());
 
 //        viewPager.setPageMargin(20);
 
@@ -80,58 +67,45 @@ public class MainActivity extends MvpAppCompatActivity implements MainContract.V
 
     }
 
-    private void initViews() {
-        viewPager = findViewById(R.id.viewpager);
-        progressBar = findViewById(R.id.loading_gif);
-        gif = findViewById(R.id.gif);
-        description = findViewById(R.id.gif_description);
-        next = findViewById(R.id.next);
-        previous = findViewById(R.id.previous);
-        errorLayout = findViewById(R.id.error_message);
-        cardView = findViewById(R.id.card_view);
-        buttonsLayout = findViewById(R.id.buttons);
-        repeat = findViewById(R.id.repeat);
-    }
-
     @Override
     public void loadingGif() {
-        progressBar.setVisibility(View.VISIBLE);
-        gif.setVisibility(View.INVISIBLE);
-        description.setVisibility(View.INVISIBLE);
-        errorLayout.setVisibility(View.GONE);
+        binding.loadingGif.setVisibility(View.VISIBLE);
+        binding.gif.setVisibility(View.INVISIBLE);
+        binding.gifDescription.setVisibility(View.INVISIBLE);
+        binding.errorMessage.setVisibility(View.GONE);
     }
 
     @Override
     public void showGif(GifDbModel gifDbModel) {
-        description.setVisibility(View.VISIBLE);
-        description.setText(gifDbModel.getDescription());
-        gif.setVisibility(View.VISIBLE);
+        binding.gifDescription.setVisibility(View.VISIBLE);
+        binding.gifDescription.setText(gifDbModel.getDescription());
+        binding.gif.setVisibility(View.VISIBLE);
         Glide
                 .with(this)
                 .load(gifDbModel.getImageUrl())
                 .centerCrop()
-                .into(gif);
-        errorLayout.setVisibility(View.GONE);
-        progressBar.setVisibility(View.INVISIBLE);
+                .into(binding.gif);
+        binding.errorMessage.setVisibility(View.GONE);
+        binding.loadingGif.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showError(Throwable throwable) {
-        cardView.setVisibility(View.INVISIBLE);
-        buttonsLayout.setVisibility(View.INVISIBLE);
-        errorLayout.setVisibility(View.VISIBLE);
+        binding.cardView.setVisibility(View.INVISIBLE);
+        binding.buttons.setVisibility(View.INVISIBLE);
+        binding.errorMessage.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void disablePreviousButton() {
-        previous.setEnabled(false);
+        binding.previous.setEnabled(false);
     }
 
     @Override
     public void hideError() {
-        errorLayout.setVisibility(View.GONE);
-        cardView.setVisibility(View.VISIBLE);
-        buttonsLayout.setVisibility(View.VISIBLE);
+        binding.errorMessage.setVisibility(View.GONE);
+        binding.cardView.setVisibility(View.VISIBLE);
+        binding.buttons.setVisibility(View.VISIBLE);
     }
 
     @Override
