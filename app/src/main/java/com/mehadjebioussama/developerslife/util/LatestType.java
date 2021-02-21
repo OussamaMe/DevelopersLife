@@ -1,10 +1,10 @@
-package com.mehadjebioussama.developerslife.util.factory;
+package com.mehadjebioussama.developerslife.util;
 
-public class HotType implements GifType {
+public class LatestType implements GifType {
     int currentGif = 0;
     @Override
     public String getType() {
-        return "hot";
+        return "latest";
     }
 
     @Override

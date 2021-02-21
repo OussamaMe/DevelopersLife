@@ -1,6 +1,8 @@
-package com.mehadjebioussama.developerslife.di;
+package com.mehadjebioussama.developerslife.di.module;
 
 import com.mehadjebioussama.developerslife.network.GifService;
+
+import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
 import dagger.Module;
@@ -13,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NetworkModule {
 
     @Provides
+    @Singleton
     Retrofit provideRetrofit() {
         return
                 new Retrofit.Builder()
@@ -23,6 +26,7 @@ public class NetworkModule {
     }
 
     @Provides
+    @Singleton
     GifService provideGifsService(@NonNull Retrofit retrofit) {
         return retrofit.create(GifService.class);
     }

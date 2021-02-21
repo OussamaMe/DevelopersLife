@@ -8,8 +8,11 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.mehadjebioussama.developerslife.CustomPagerAdapter;
+import com.mehadjebioussama.developerslife.GifApp;
 import com.mehadjebioussama.developerslife.databinding.ActivityMainBinding;
 import com.mehadjebioussama.developerslife.db.GifDbModel;
+
+import javax.inject.Inject;
 
 import androidx.viewpager.widget.ViewPager;
 import moxy.MvpAppCompatActivity;
@@ -17,19 +20,23 @@ import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
 public class MainActivity extends MvpAppCompatActivity implements MainContract.View, ViewPager.OnPageChangeListener {
+
     @InjectPresenter
     MainPresenter presenter;
 
+    @Inject
+    MainPresenter presenterProvider;
+
     @ProvidePresenter
     MainPresenter provideRepositoryPresenter() {
-        MainRepository repository = new MainRepository();
-        return new MainPresenter(repository);
+        return presenterProvider;
     }
 
     private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((GifApp) getApplication()).getAppComponent().injectMainActivity(this);
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE));
         setContentView(binding.getRoot());
@@ -103,9 +110,4 @@ public class MainActivity extends MvpAppCompatActivity implements MainContract.V
     @Override
     public void onPageScrollStateChanged(int state) { }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.onActivityDestroy();
-    }
 }

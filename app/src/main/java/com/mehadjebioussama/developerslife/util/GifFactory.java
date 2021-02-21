@@ -1,20 +1,29 @@
-package com.mehadjebioussama.developerslife.util.factory;
+package com.mehadjebioussama.developerslife.util;
 
-import static com.mehadjebioussama.developerslife.util.Constansts.LATEST;
-import static com.mehadjebioussama.developerslife.util.Constansts.TOP;
+import javax.inject.Inject;
+
 
 public class GifFactory {
+
+    private static final int LATEST = 0;
+    private static final int TOP = 1;
+
     private GifType latestType;
     private GifType hotType;
     private GifType topType;
-    public GifType getGifType(int currentItem){
-        if(currentItem == LATEST){
-            if(latestType == null){
+
+    @Inject
+    public GifFactory() {
+    }
+
+    public GifType getGifType(int currentItem) {
+        if (currentItem == LATEST) {
+            if (latestType == null) {
                 latestType = new LatestType();
             }
             return latestType;
-        }else if(currentItem == TOP){
-            if(topType == null){
+        } else if (currentItem == TOP) {
+            if (topType == null) {
                 topType = new TopType();
             }
             return topType;

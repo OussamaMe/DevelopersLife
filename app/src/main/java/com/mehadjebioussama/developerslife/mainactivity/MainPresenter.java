@@ -1,83 +1,98 @@
 package com.mehadjebioussama.developerslife.mainactivity;
 
-import com.mehadjebioussama.developerslife.db.GifDbModel;
-import com.mehadjebioussama.developerslife.util.EspressoTestingIdlingResource;
+import com.mehadjebioussama.developerslife.repository.MainRepository;
+import com.mehadjebioussama.developerslife.util.GifFactory;
 
+import javax.inject.Inject;
+
+import io.reactivex.disposables.CompositeDisposable;
 import moxy.InjectViewState;
 import moxy.MvpPresenter;
 
 @InjectViewState
-public class MainPresenter extends MvpPresenter<MainContract.View> implements MainContract.Presenter{
-    private MainRepository repository;
+public class MainPresenter extends MvpPresenter<MainContract.View> implements MainContract.Presenter {
 
-    public MainPresenter(MainRepository repository) {
+    private final MainRepository repository;
+    private final GifFactory gifFactory;
+    private final CompositeDisposable compositeDisposable;
+
+    @Inject
+    public MainPresenter(MainRepository repository, GifFactory gifFactory) {
         super();
         this.repository = repository;
+        this.gifFactory = gifFactory;
+        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        repository.loadGif(callback, 0);
-       // Необходимо раскоментить для UI теста
-//        EspressoTestingIdlingResource.increment();
-    }
-
-    @Override
-    public void onNextClick(int currentItem) {
-        repository.onNextClick(callback, currentItem);
-        // Необходимо раскоментить для UI теста
-//        EspressoTestingIdlingResource.increment();
-    }
-
-    @Override
-    public void onPreviousClick(int currentItem) {
-        repository.onPreviousClick(callback, currentItem);
-        // Необходимо раскоментить для UI теста
-//        EspressoTestingIdlingResource.increment();
+        loadGif(0);
     }
 
     @Override
     public void tryAgain(int currentItem) {
         getViewState().hideError();
-        repository.loadGif(callback, currentItem);
-        // Необходимо раскоментить для UI теста
-//        EspressoTestingIdlingResource.increment();
+        loadGif(currentItem);
+    }
+
+    private void loadGif(int currentItem) {
+        updateViews(currentItem);
+        compositeDisposable.add(
+                repository.loadGifsFromDb(gifFactory.getGifType(currentItem).getType())
+                        .subscribe(gifDbModels -> {
+                            if (gifDbModels.size() != 0) {
+                                if (gifDbModels.size() > gifFactory.getGifType(currentItem).getCurrentGif()) {
+                                    getViewState().showGif(gifDbModels.get(gifFactory.getGifType(currentItem).getCurrentGif()));
+                                } else {
+                                    getGifFromApi(gifFactory.getGifType(currentItem).getType());
+                                }
+
+                            } else {
+                                getGifFromApi(gifFactory.getGifType(currentItem).getType());
+                            }
+                        }, throwable -> getViewState().showError(throwable))
+        );
+    }
+
+    private void updateViews(int currentItem) {
+        getViewState().loadingGif();
+        if (gifFactory.getGifType(currentItem).getCurrentGif() == 0) {
+            getViewState().disablePreviousButton();
+        } else {
+            getViewState().enablePreviousButton();
+        }
+    }
+
+    private void getGifFromApi(String gifType) {
+        compositeDisposable.add(
+                repository.getGifFromApi(gifType)
+                        .subscribe(gifDbModel -> getViewState().showGif(gifDbModel)
+                                , throwable -> getViewState().showError(throwable))
+        );
+
     }
 
     @Override
-    public void onActivityDestroy() {
-        repository.dispose();
+    public void onNextClick(int currentItem) {
+        gifFactory.getGifType(currentItem).incrementCurrentGif();
+        loadGif(currentItem);
     }
 
-    private final MainContract.OnResponseCallback callback = new MainContract.OnResponseCallback() {
-        @Override
-        public void showData(GifDbModel gifDbModel) {
-            getViewState().showGif(gifDbModel);
-            // Необходимо раскоментить для UI теста
-//            EspressoTestingIdlingResource.decrement();
+    @Override
+    public void onPreviousClick(int currentItem) {
+        if (gifFactory.getGifType(currentItem).getCurrentGif() != 0) {
+            if (gifFactory.getGifType(currentItem).getCurrentGif() == 1) {
+                getViewState().disablePreviousButton();
+            }
+            gifFactory.getGifType(currentItem).decrementCurrentGif();
+            loadGif(currentItem);
         }
+    }
 
-        @Override
-        public void showError(Throwable throwable) {
-            getViewState().showError(throwable);
-            // Необходимо раскоментить для UI теста
-//            EspressoTestingIdlingResource.decrement();
-        }
-
-        @Override
-        public void disablePreviousButton() {
-            getViewState().disablePreviousButton();
-        }
-
-        @Override
-        public void showProgress() {
-            getViewState().loadingGif();
-        }
-
-        @Override
-        public void enablePreviousButton() {
-            getViewState().enablePreviousButton();
-        }
-    };
+    @Override
+    public void onDestroy() {
+        compositeDisposable.clear();
+        super.onDestroy();
+    }
 }

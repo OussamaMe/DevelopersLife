@@ -7,17 +7,16 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-import static com.mehadjebioussama.developerslife.util.Constansts.LATEST;
-import static com.mehadjebioussama.developerslife.util.Constansts.NUM_OF_CATEGORIES;
-import static com.mehadjebioussama.developerslife.util.Constansts.TOP;
-
 public class CustomPagerAdapter extends PagerAdapter {
+    private static final int LATEST = 0;
+    private static final int TOP = 1;
+    private static final int HOT = 2;
+    private static final int NUM_OF_CATEGORIES = 3;
 
     Context context;
 
     public CustomPagerAdapter(Context context) {
         this.context = context;
-
     }
 
     @Override
@@ -32,7 +31,7 @@ public class CustomPagerAdapter extends PagerAdapter {
 
     @NonNull
     @Override
-    public  Object instantiateItem(@NonNull ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         return null;
     }
 
@@ -48,10 +47,14 @@ public class CustomPagerAdapter extends PagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        if (position == LATEST) {
-            return context.getString(R.string.latest);
-        } else if (position == TOP) {
-            return context.getString(R.string.top);
-        } else return context.getString(R.string.hot);
+        switch (position) {
+            case LATEST:
+                return context.getString(R.string.latest);
+            case TOP:
+                return context.getString(R.string.top);
+            case HOT:
+                return context.getString(R.string.hot);
+        }
+        return "Error";
     }
 }

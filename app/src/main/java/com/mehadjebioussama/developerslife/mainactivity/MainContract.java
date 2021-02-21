@@ -29,20 +29,6 @@ public interface MainContract {
         void onPreviousClick(int currentItem);
 
         void tryAgain(int currentItem);
-
-        void onActivityDestroy();
     }
 
-    interface OnResponseCallback{
-
-        void showData(GifDbModel gifDbModel);
-
-        void showError(Throwable throwable);
-
-        void disablePreviousButton();
-
-        void showProgress();
-
-        void enablePreviousButton();
-    }
 }
